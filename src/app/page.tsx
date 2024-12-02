@@ -13,8 +13,8 @@ export default function Home() {
   const [direction, setDirection] = React.useState<"up" | "down">("up");
   const [openInfos, setOpenInfos] = React.useState(false);
   const [isMobile, setIsMobile] = React.useState(false);
-  const swipeStartX = React.useRef(null);
-  const swipeEndX = React.useRef(null);
+  const swipeStartX = React.useRef<number | null>(null); // Autorise null au départ
+  const swipeEndX = React.useRef<number | null>(null); // Autorise null au départ
 
   const nextRef = React.useRef<HTMLButtonElement>(null);
   const prevRef = React.useRef<HTMLButtonElement>(null);
@@ -41,11 +41,11 @@ export default function Home() {
     setOpenInfos(false);
   };
 
-  const handleTouchStart = (e) => {
+  const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
     swipeStartX.current = e.touches[0].clientX;
   };
 
-  const handleTouchMove = (e) => {
+  const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
     swipeEndX.current = e.touches[0].clientX;
   };
 
