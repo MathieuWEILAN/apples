@@ -2,20 +2,81 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@layer base {
+  /* Ajoutez ici vos styles globaux */
+  body {
+    font-family: "Fredoka One", sans-serif;
+    height: 100vh;
+    width: 100vw;
+  }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  h1 {
+    font-family: "Luckiest Guy", sans-serif; /* Police arrondie et ludique */
+    font-weight: 400; /* Poids par défaut pour Luckiest Guy */
+    color: white; /* Intérieur blanc */
+    -webkit-text-stroke: 2px black; /* Contour noir épais */
+    text-transform: uppercase; /* Texte en majuscules */
+    font-size: 3.5rem; /* Taille ajustée pour plus d'impact */
+    text-align: center; /* Centrage horizontal */
+    line-height: 1.2; /* Espacement vertical propre */
+    margin: 0; /* Supprime les marges par défaut */
+    text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.5); /* Ombre portée subtile */
+  }
+  h2 {
+    font-family: "Luckiest Guy", sans-serif; /* Police arrondie et ludique */
+    font-weight: 400; /* Poids par défaut pour Luckiest Guy */
+    color: white; /* Intérieur blanc */
+    -webkit-text-stroke: 2px black; /* Contour noir épais */
+    text-transform: uppercase; /* Texte en majuscules */
+    font-size: 2rem; /* Taille ajustée pour plus d'impact */
+    text-align: center; /* Centrage horizontal */
+    line-height: 1.2; /* Espacement vertical propre */
+    margin: 0; /* Supprime les marges par défaut */
+    text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.5); /* Ombre portée subtile */
+  }
+  p {
+    font-family: "Luckiest Guy", sans-serif; /* Police arrondie et ludique */
+    font-weight: 400; /* Poids par défaut pour Luckiest Guy */
+    color: white; /* Intérieur blanc */
+    -webkit-text-stroke: 2px black; /* Contour noir épais */
+    text-transform: uppercase; /* Texte en majuscules */
+    font-size: 1.5rem; /* Taille ajustée pour plus d'impact */
+    text-align: center; /* Centrage horizontal */
+    line-height: 1.2; /* Espacement vertical propre */
+    margin: 0; /* Supprime les marges par défaut */
   }
 }
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+.outlined-text {
+  font-family: "Luckiest Guy", sans-serif; /* Police arrondie et ludique */
+  font-weight: 400; /* Poids par défaut pour Luckiest Guy */
+  color: white; /* Intérieur blanc */
+  -webkit-text-stroke: 2px black; /* Contour noir épais */
+  text-transform: uppercase; /* Texte en majuscules */
+  text-align: center; /* Centrage horizontal */
+  line-height: 1.2; /* Espacement vertical propre */
+  margin: 0; /* Supprime les marges par défaut */
+}
+@keyframes spin-3d {
+  from {
+    transform: rotateY(0deg);
+  }
+  to {
+    transform: rotateY(360deg);
+  }
+}
+
+.spin-3d {
+  animation: spin-3d 3s linear infinite; /* 3s pour une rotation complète */
+  transform-style: preserve-3d; /* Préserve la perspective */
+  display: inline-block; /* Pour éviter que l'image s'étire */
+}
+
+.no-scrollbar {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* Internet Explorer */
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
 }

@@ -1,16 +1,11 @@
 import type { Metadata } from "next";
-import localFont from "next/font/local";
+import { Luckiest_Guy } from "next/font/google";
 import "./globals.css";
 
-const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
-  weight: "100 900",
-});
-const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
-  weight: "100 900",
+// const fredoka = Fredoka({ subsets: ["latin"] });
+const luckiestGuy = Luckiest_Guy({
+  subsets: ["latin"],
+  weight: "400", // Spécifiez le poids explicitement
 });
 
 export const metadata: Metadata = {
@@ -25,11 +20,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
-      </body>
+      <body className={`${luckiestGuy.className}`}>{children}</body>
     </html>
   );
 }

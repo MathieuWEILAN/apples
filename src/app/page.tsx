@@ -1,101 +1,150 @@
-import Image from "next/image";
+"use client";
+
+import React from "react";
+import { apples } from "./data";
+import Apple from "./components/Apple";
+import { AnimatePresence, motion } from "framer-motion";
+import Select from "./components/Select";
+import ArrowLeft from "./icons/ArrowLeft";
+import ArrowRight from "./icons/ArrowRight";
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const [currentIndex, setCurrentIndex] = React.useState(0);
+  const [direction, setDirection] = React.useState<"up" | "down">("up");
+  const [openInfos, setOpenInfos] = React.useState(false);
+  const [isMobile, setIsMobile] = React.useState(false);
+  const swipeStartX = React.useRef(null);
+  const swipeEndX = React.useRef(null);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
+  const nextRef = React.useRef<HTMLButtonElement>(null);
+  const prevRef = React.useRef<HTMLButtonElement>(null);
+  React.useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    setIsMobile(window.innerWidth < 768);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+  const handleNext = () => {
+    setDirection("up"); // Définir la direction
+    setCurrentIndex((prevIndex) => (prevIndex + 1) % apples.length);
+    setOpenInfos(false);
+  };
+
+  const handlePrev = () => {
+    setDirection("down"); // Définir la direction
+    setCurrentIndex((prevIndex) =>
+      prevIndex === 0 ? apples.length - 1 : prevIndex - 1
+    );
+    setOpenInfos(false);
+  };
+
+  const handleTouchStart = (e) => {
+    swipeStartX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchMove = (e) => {
+    swipeEndX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchEnd = () => {
+    const threshold = 50; // Minimum distance for a swipe to be detected
+    if (
+      swipeStartX.current !== null &&
+      swipeEndX.current !== null &&
+      Math.abs(swipeStartX.current - swipeEndX.current) > threshold
+    ) {
+      if (swipeStartX.current > swipeEndX.current) {
+        // Swipe left
+        setCurrentIndex((prevIndex) =>
+          prevIndex < apples.length - 1 ? prevIndex + 1 : prevIndex
+        );
+      } else {
+        // Swipe right
+        setCurrentIndex((prevIndex) =>
+          prevIndex > 0 ? prevIndex - 1 : prevIndex
+        );
+      }
+    }
+    // Reset swipe values
+    swipeStartX.current = null;
+    swipeEndX.current = null;
+  };
+
+  const handleChange = (selectedApple: number) => {
+    setCurrentIndex(selectedApple);
+  };
+
+  return (
+    <main className="h-screen w-screen overflow-hidden relative">
+      <Select
+        handleChange={handleChange}
+        selected={apples[currentIndex]}
+        setOpenInfos={setOpenInfos}
+      />
+      {/* Navigation */}
+      <div className="absolute inset-0 flex justify-between items-center z-20 pointer-events-none">
+        <motion.button
+          ref={prevRef}
+          onClick={handlePrev}
+          className="p-2.5 lg:p-5 text-white rounded-full pointer-events-auto"
+          whileHover={{
+            scale: [1, 1.1, 1], // Keyframes pour agrandir et revenir à la taille normale
+            transition: {
+              duration: 0.6, // Durée totale d'un cycle
+              repeat: Infinity, // Répétition continue
+              ease: "easeInOut", // Animation fluide
+            },
+          }}
+          whileTap={{
+            scale: 0.9, // Effet au clic
+          }}
         >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
+          <ArrowLeft />
+        </motion.button>
+        <motion.button
+          ref={nextRef}
+          onClick={handleNext}
+          className="p-2.5 lg:p-5 text-white rounded-full pointer-events-auto"
+          whileHover={{
+            scale: [1, 1.1, 1], // Keyframes pour agrandir et revenir à la taille normale
+            transition: {
+              duration: 0.6, // Durée totale d'un cycle
+              repeat: Infinity, // Répétition continue
+              ease: "easeInOut", // Animation fluide
+            },
+          }}
+          whileTap={{
+            scale: 0.9, // Effet au clic
+          }}
         >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
+          <ArrowRight />
+        </motion.button>
+      </div>
+      <div
+        className="flex overflow-hidden w-screen"
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+      >
+        <AnimatePresence mode="wait">
+          <Apple
+            key={`${apples[currentIndex].name}-${direction}`} // Clé unique pour chaque slide
+            data={apples[currentIndex]}
+            currentIndex={currentIndex}
+            prevData={
+              apples[(currentIndex - 1 + apples.length) % apples.length]
+            }
+            nextData={apples[(currentIndex + 1) % apples.length]}
+            direction={direction}
+            openInfos={openInfos}
+            setOpenInfos={setOpenInfos}
+            isMobile={isMobile}
           />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+        </AnimatePresence>
+      </div>
+    </main>
   );
 }

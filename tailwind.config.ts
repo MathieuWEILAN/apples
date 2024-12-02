@@ -12,6 +12,12 @@ export default {
         background: "var(--background)",
         foreground: "var(--foreground)",
       },
+      fontFamily: {
+        luckiest: ['"Luckiest Guy"', "cursive"], // Luckiest Guy
+      },
+      dropShadow: {
+        white: "0 0 4px rgba(255, 255, 255, 1)", // Shadow blanc intense
+      },
     },
   },
   plugins: [],
